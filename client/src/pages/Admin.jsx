@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { getAllFoods, createFood, deleteFood } from "../services/foodService";
+import { getAllFoods, createFood, updateFood, deleteFood } from "../services/foodService";
 import axios from 'axios';
 
 const Admin = () => {
   const [foods, setFoods] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [users, setUsers] = useState([]);
   const [imageInputMethod, setImageInputMethod] = useState("file"); // "file" or "url"
   const [formData, setFormData] = useState({
     name: "",
@@ -17,6 +18,8 @@ const Admin = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [uploading, setUploading] = useState(false);
   const [validatingUrl, setValidatingUrl] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingId, setEditingId] = useState(null);
 
   const fetchFoods = async () => {
     const data = await getAllFoods();
@@ -27,9 +30,15 @@ const Admin = () => {
     setOrders(data);
   };
 
+  const fetchUsers = async () => {
+    const { data } = await axios.get('/api/auth/users');
+    setUsers(data);
+  };
+
   useEffect(() => {
     fetchFoods();
     fetchOrders();
+    fetchUsers();
   }, []);
 
   const handleChange = (e) => {
@@ -101,26 +110,59 @@ const Admin = () => {
     }
 
     try {
-      const foodData = {
-        ...formData,
-        price: parseFloat(formData.price),
-        countInStock: formData.countInStock ? parseInt(formData.countInStock) : 0,
-      };
-      await createFood(foodData);
-      alert("Food item added successfully!");
+      if (isEditing) {
+        // Update existing food
+        await updateFood(editingId, formData);
+        alert("Food item updated successfully!");
+      } else {
+        // Create new food
+        const foodData = {
+          ...formData,
+          price: parseFloat(formData.price),
+          countInStock: formData.countInStock ? parseInt(formData.countInStock) : 0,
+        };
+        await createFood(foodData);
+        alert("Food item added successfully!");
+      }
       fetchFoods();
-      setFormData({ name: "", price: "", shortDescription: "", description: "", image: "", category: "" });
-      setImageUrl("");
-      setSelectedFile(null);
+      handleCancelEdit(); // Reset form after success
     } catch (error) {
-      console.error("Error creating food:", error);
-      alert(error.response?.data?.message || "Failed to add food item. Please try again.");
+      console.error("Error saving food:", error);
+      alert(error.response?.data?.message || "Failed to save food item. Please try again.");
     }
   };
 
   const handleDelete = async (id) => {
     await deleteFood(id);
     fetchFoods();
+  };
+
+  const handleEdit = (food) => {
+    setFormData({
+      name: food.name,
+      price: food.price,
+      shortDescription: food.shortDescription || "",
+      description: food.description,
+      image: food.image,
+    });
+    setImageUrl("");
+    setSelectedFile(null);
+    setIsEditing(true);
+    setEditingId(food._id);
+  };
+
+  const handleCancelEdit = () => {
+    setFormData({
+      name: "",
+      price: "",
+      shortDescription: "",
+      description: "",
+      image: "",
+    });
+    setImageUrl("");
+    setSelectedFile(null);
+    setIsEditing(false);
+    setEditingId(null);
   };
 
   const handleUpdateStatus = async (id, status) => {
@@ -132,7 +174,7 @@ const Admin = () => {
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
       <div className="mb-12 bg-gray-50 p-6 rounded-lg">
-        <h2 className="text-xl font-bold mb-4">Manage Menu</h2>
+        <h2 className="text-xl font-bold mb-4">{isEditing ? "Edit Food Item" : "Manage Menu"}</h2>
         
         {/* Image Upload Section */}
         <div className="mb-4 p-4 bg-white rounded border">
@@ -260,8 +302,16 @@ const Admin = () => {
           disabled={!formData.image}
           className="bg-green-500 text-white px-6 py-3 rounded mt-4 disabled:bg-gray-400"
         >
-          Add Food Item
+          {isEditing ? "Update Food Item" : "Add Food Item"}
         </button>
+        {isEditing && (
+          <button 
+            onClick={handleCancelEdit}
+            className="bg-gray-500 text-white px-6 py-3 rounded mt-4 ml-4"
+          >
+            Cancel Edit
+          </button>
+        )}
       </div>
 
       <table className="w-full border">
@@ -278,6 +328,7 @@ const Admin = () => {
               <td className="border px-2">{food.name}</td>
               <td className="border px-2">${food.price}</td>
               <td className="border px-2">
+                <button onClick={() => handleEdit(food)} className="bg-blue-500 text-white px-2 py-1 rounded mr-2">Edit</button>
                 <button onClick={() => handleDelete(food._id)} className="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
               </td>
             </tr>
@@ -323,6 +374,47 @@ const Admin = () => {
                     <option value="Delivered">Delivered</option>
                   </select>
                 </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 className="text-2xl font-bold mt-12 mb-4">User Management</h2>
+      <p className="mb-4 text-gray-600">Total Users: {users.length}</p>
+      <div className="overflow-x-auto">
+        <table className="w-full border">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="border px-4 py-2">Name</th>
+              <th className="border px-4 py-2">Email</th>
+              <th className="border px-4 py-2">Phone</th>
+              <th className="border px-4 py-2">Admin</th>
+              <th className="border px-4 py-2">Verified</th>
+              <th className="border px-4 py-2">Joined</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user._id}>
+                <td className="border px-4 py-2">{user.name}</td>
+                <td className="border px-4 py-2">{user.email}</td>
+                <td className="border px-4 py-2">{user.phoneNumber || 'N/A'}</td>
+                <td className="border px-4 py-2">
+                  {user.isAdmin ? (
+                    <span className="text-green-600 font-semibold">Yes</span>
+                  ) : (
+                    <span className="text-gray-600">No</span>
+                  )}
+                </td>
+                <td className="border px-4 py-2">
+                  {user.isVerified ? (
+                    <span className="text-green-600 font-semibold">Yes</span>
+                  ) : (
+                    <span className="text-red-600">No</span>
+                  )}
+                </td>
+                <td className="border px-4 py-2">{new Date(user.createdAt).toLocaleDateString()}</td>
               </tr>
             ))}
           </tbody>

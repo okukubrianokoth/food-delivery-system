@@ -201,6 +201,16 @@ export const resetPassword = async (req, res, next) => {
   }
 };
 
+// Get all users (Admin only)
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}).select('-password -otp -otpExpires -resetPasswordToken -resetPasswordExpires');
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error fetching users' });
+  }
+};
+
 // Login
 export const loginUser = async (req, res) => {
   const { password } = req.body;
