@@ -1,0 +1,14 @@
+{
+  "name": "food-delivery-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Full-stack food delivery system",
+  "scripts": {
+    "client": "cd client && npm run dev",
+    "server": "cd server && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "dependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
