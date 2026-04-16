@@ -53,6 +53,34 @@
   }
 }
 
+/* Cart page override: use menu-style card layout for cart item photos */
+.cart-page {
+  justify-content: flex-start;
+}
+
+.cart-page .food-item {
+  flex: 0 1 calc(33.333% - 12px);
+  min-width: 240px;
+}
+
+.cart-page .foods-container {
+  gap: 10px;
+}
+
+@media (max-width: 1024px) {
+  .cart-page .food-item {
+    flex: 0 1 calc(50% - 10px);
+    min-width: 220px;
+  }
+}
+
+@media (max-width: 640px) {
+  .cart-page .food-item {
+    flex: 0 1 100%;
+    min-width: 100%;
+  }
+}
+
 @media (min-width: 1025px) {
   .foods-container {
     gap: 16px;

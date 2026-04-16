@@ -49,7 +49,7 @@ const Orders = () => {
                   <p className="mt-1 text-sm text-gray-700">Payment: <span className={`font-semibold ${order.paymentConfirmed ? 'text-green-600' : 'text-yellow-700'}`}>{order.paymentConfirmed ? 'Confirmed' : 'Pending'}</span></p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xl font-bold">KSh {order.totalPrice.toFixed(2)}</p>
+                  <p className="text-xl font-bold">KSh {order.total?.toFixed(2) ?? 0.00}</p>
                   <p className="text-sm text-gray-500 mt-2">{order.orderItems?.length || 0} item{order.orderItems?.length === 1 ? '' : 's'}</p>
                   <p className="text-xs text-blue-600 mt-2">{expandedOrder === order._id ? '▼ Click to collapse' : '▶ Click to expand'}</p>
                 </div>
