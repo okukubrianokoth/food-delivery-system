@@ -1,0 +1,179 @@
+/* Food Display Container Styles */
+/* Applies consistent flexbox layout to all food display sections */
+
+.foods-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* Alternative container for single row without wrapping */
+.foods-container-nowrap {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 10px;
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+/* Food card wrapper - maintains consistent sizing */
+.food-item {
+  flex: 0 1 calc(33.333% - 12px);
+  min-width: 240px;
+  display: flex;
+}
+
+/* Responsive food item sizing for flexbox */
+@media (max-width: 1024px) {
+  .food-item {
+    flex: 0 1 calc(50% - 10px);
+    min-width: 220px;
+  }
+}
+
+@media (max-width: 640px) {
+  .foods-container {
+    gap: 8px;
+  }
+  
+  .food-item {
+    flex: 0 1 100%;
+    min-width: 100%;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .foods-container {
+    gap: 12px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .foods-container {
+    gap: 16px;
+  }
+}
+
+/* Featured section specific */
+.featured-food-item {
+  flex: 0 1 calc(25% - 12px);
+  min-width: 200px;
+}
+
+@media (max-width: 1024px) {
+  .featured-food-item {
+    flex: 0 1 calc(33.333% - 12px);
+    min-width: 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .featured-food-item {
+    flex: 0 1 calc(50% - 12px);
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 640px) {
+  .featured-food-item {
+    flex: 0 1 calc(50% - 6px);
+    min-width: 120px;
+  }
+}
+
+/* Menu food cards - horizontal layout */
+.menu-food-card {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+/* Horizontal food card styling */
+.food-card-horizontal {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.food-card-horizontal img {
+  flex-shrink: 0;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.food-card-horizontal .food-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.external-review-widget {
+  margin-top: 12px;
+}
+
+.external-review-widget button {
+  border: none;
+}
+
+.external-review-widget textarea,
+.external-review-widget select {
+  width: 100%;
+}
+
+
+/* Menu filter tabs */
+.menu-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.menu-filter-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.menu-filter-btn:hover {
+  background-color: #f3f4f6;
+}
+
+.menu-filter-btn.active {
+  background-color: #ea580c;
+  color: white;
+  border-color: #ea580c;
+}
+
+.menu-filter-btn.active:hover {
+  background-color: #dc2626;
+  border-color: #dc2626;
+}
+
+@media (max-width: 640px) {
+  .menu-filters {
+    gap: 6px;
+  }
+  
+  .menu-filter-btn {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+}

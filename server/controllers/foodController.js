@@ -141,13 +141,15 @@ export const createFood = async (req, res) => {
       return res.status(400).json({ message: "Please provide all required fields (name, price, image, description)" });
     }
 
+    const ingredientsList = Array.isArray(ingredients) ? ingredients : (ingredients ? ingredients.split(',').map(i => i.trim()) : []);
+
     const food = await Food.create({ 
       name, 
       price, 
       description, 
       image, 
       category, 
-      ingredients, 
+      ingredients: ingredientsList, 
       countInStock, 
       shortDescription 
     });
@@ -164,9 +166,16 @@ export const updateFood = async (req, res) => {
     const food = await Food.findById(req.params.id);
     if (!food) return res.status(404).json({ message: "Food not found" });
 
-    // Only update fields provided in the request
+    // Handle ingredients array specially
+    if (req.body.ingredients) {
+      food.ingredients = Array.isArray(req.body.ingredients) ? req.body.ingredients : req.body.ingredients.split(',').map(i => i.trim());
+    }
+
+    // Update other fields
     Object.keys(req.body).forEach((key) => {
-      food[key] = req.body[key] ?? food[key];
+      if (key !== 'ingredients') {
+        food[key] = req.body[key] ?? food[key];
+      }
     });
 
     const updatedFood = await food.save();
@@ -187,4 +196,61 @@ export const deleteFood = async (req, res) => {
 export const getTopFoods = async (req, res) => {
   const foods = await Food.find({}).sort({ rating: -1 }).limit(4);
   res.json(foods);
+};
+
+// Get external API foods
+export const getExternalFoods = async (req, res) => {
+  try {
+    const placeholder = 'https://via.placeholder.com/400?text=No+Image';
+
+    const fetchJson = async (url) => {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Fetch failed (${response.status}) for ${url}`);
+      }
+      return response.json();
+    };
+
+    const [sampleData, mealData, cocktailData] = await Promise.all([
+      fetchJson('https://api.sampleapis.com/recipes/recipes'),
+      fetchJson('https://www.themealdb.com/api/json/v1/1/search.php?s=chicken'),
+      fetchJson('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita'),
+    ]);
+
+    const sampleFoods = (sampleData || []).slice(0, 6).map((recipe) => ({
+      _id: `sample-${recipe.id || Math.random().toString(36).substr(2, 9)}`,
+      name: recipe.title || recipe.name || 'Unnamed Recipe',
+      description: recipe.description || recipe.course || 'Delicious dish',
+      image: recipe.photoUrl || recipe.image || placeholder,
+      price: recipe.cost ? parseFloat(recipe.cost) || Math.floor(Math.random() * 500) + 300 : Math.floor(Math.random() * 500) + 300,
+      source: 'sampleapis',
+      rating: recipe.rating ? Number(recipe.rating) || Math.floor(Math.random() * 5) + 1 : Math.floor(Math.random() * 5) + 1,
+    }));
+
+    const mealFoods = (mealData.meals || []).slice(0, 8).map((meal) => ({
+      _id: `meal-${meal.idMeal}`,
+      name: meal.strMeal || 'MealDB Recipe',
+      description: [meal.strArea, meal.strCategory].filter(Boolean).join(' • ') || 'Tasty recipe',
+      image: meal.strMealThumb || placeholder,
+      price: Math.floor(Math.random() * 500) + 300,
+      source: 'mealdb',
+      rating: Math.floor(Math.random() * 5) + 1,
+    }));
+
+    const cocktailFoods = (cocktailData.drinks || []).slice(0, 8).map((drink) => ({
+      _id: `cocktail-${drink.idDrink}`,
+      name: drink.strDrink || 'CocktailDB Drink',
+      description: [drink.strCategory, drink.strAlcoholic].filter(Boolean).join(' • ') || 'Refreshing beverage',
+      image: drink.strDrinkThumb || placeholder,
+      price: Math.floor(Math.random() * 400) + 200,
+      source: 'cocktaildb',
+      rating: Math.floor(Math.random() * 5) + 1,
+    }));
+
+    const foods = [...sampleFoods, ...mealFoods, ...cocktailFoods];
+    res.json(foods);
+  } catch (error) {
+    console.error('External foods fetch error:', error);
+    res.status(500).json({ message: 'Failed to fetch external foods', error: error.message });
+  }
 };

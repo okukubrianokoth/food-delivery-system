@@ -24,3 +24,8 @@ export const deleteFood = async (id) => {
   const response = await API.delete(`/api/foods/${id}`);
   return response.data;
 };
+
+export const getExternalFoods = async () => {
+  const response = await API.get("/api/foods/external/foods");
+  return response.data;
+};

@@ -1,7 +1,7 @@
 import Order from '../models/Order.js';
 
 export const createOrder = async (req, res) => {
-  const { orderItems, totalPrice, phoneNumber } = req.body;
+  const { orderItems, totalPrice, phoneNumber, deliveryAddress, notes } = req.body;
   if (orderItems && orderItems.length === 0) {
     return res.status(400).json({ message: 'No order items' });
   }
@@ -9,10 +9,16 @@ export const createOrder = async (req, res) => {
     user: req.user._id,
     items: orderItems.map(item => ({
       food: item._id,
+      name: item.name,
+      price: item.price,
+      image: item.image,
+      source: item.source, // Track if food is external (mealdb, cocktaildb, sampleapis) or local
       quantity: item.quantity
     })),
     total: totalPrice,
     phoneNumber,
+    deliveryAddress,
+    notes,
     status: 'Pending'
   });
   const createdOrder = await order.save();
@@ -28,7 +34,7 @@ export const getOrders = async (req, res) => {
 };
 
 export const getAllOrders = async (req, res) => {
-  const orders = await Order.find({}).populate('user', 'id name');
+  const orders = await Order.find({}).populate('user', 'id name email phoneNumber');
   res.json(orders);
 };
 

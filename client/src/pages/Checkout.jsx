@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { CartContext } from '../context/CartContext.jsx';
+import { notificationService } from '../services/notificationService';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -42,6 +43,9 @@ const Checkout = () => {
         amount: totalAmount,
         phoneNumber: phoneNumber // Send the phone number from the input
       }, config);
+      
+      // Send notification
+      notificationService.orderPlaced(orderData._id);
       
       setMessage('Please check your phone for the M-Pesa prompt.');
       console.log('Payment Response:', paymentData);

@@ -314,27 +314,39 @@ const Admin = () => {
         )}
       </div>
 
-      <table className="w-full border">
-        <thead>
-          <tr>
-            <th className="border px-2">Name</th>
-            <th className="border px-2">Price</th>
-            <th className="border px-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {foods.map((food) => (
-            <tr key={food._id}>
-              <td className="border px-2">{food.name}</td>
-              <td className="border px-2">${food.price}</td>
-              <td className="border px-2">
-                <button onClick={() => handleEdit(food)} className="bg-blue-500 text-white px-2 py-1 rounded mr-2">Edit</button>
-                <button onClick={() => handleDelete(food._id)} className="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <h2 className="text-2xl font-bold mt-8 mb-6">Foods List</h2>
+      <div className="admin-foods-list">
+        {foods.length === 0 ? (
+          <p className="text-gray-500 text-center py-8">No food items yet. Add your first food item above!</p>
+        ) : (
+          foods.map((food) => (
+            <div key={food._id} className="admin-food-item">
+              {food.image && (
+                <img src={food.image} alt={food.name} />
+              )}
+              <div className="food-details">
+                <h3 className="font-bold text-lg">{food.name}</h3>
+                <p className="text-sm text-gray-600">{food.shortDescription}</p>
+                <p className="text-orange-600 font-semibold">KSh {food.price}</p>
+              </div>
+              <div className="actions">
+                <button 
+                  onClick={() => handleEdit(food)} 
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                >
+                  Edit
+                </button>
+                <button 
+                  onClick={() => handleDelete(food._id)} 
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
 
       <h2 className="text-2xl font-bold mt-12 mb-4">Order Management</h2>
       <div className="overflow-x-auto">

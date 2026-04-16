@@ -211,6 +211,42 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
+// Get user profile
+export const getUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select('-password -otp -otpExpires -resetPasswordToken -resetPasswordExpires');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error fetching profile' });
+  }
+};
+
+// Update user profile
+export const updateUserProfile = async (req, res) => {
+  try {
+    const { name, phoneNumber } = req.body;
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    
+    if (name) user.name = name;
+    if (phoneNumber) user.phoneNumber = phoneNumber;
+    
+    await user.save();
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      isAdmin: user.isAdmin,
+      isVerified: user.isVerified,
+      message: 'Profile updated successfully'
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error updating profile' });
+  }
+};
+
 // Login
 export const loginUser = async (req, res) => {
   const { password } = req.body;

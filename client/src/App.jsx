@@ -12,6 +12,7 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Orders from "./pages/Orders.jsx";
 import Admin from "./pages/Admin";
+import UserProfile from "./pages/UserProfile.jsx";
 import OrderConfirmation from "./pages/OrderConfirmation.jsx";
 
 // Auth Screens
@@ -70,6 +71,14 @@ const App = () => {
                 element={
                   <PrivateRoute>
                     <Orders />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <PrivateRoute>
+                    <UserProfile />
                   </PrivateRoute>
                 }
               />

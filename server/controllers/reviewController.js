@@ -16,6 +16,22 @@ export const addReview = async (req, res) => {
   const { rating, comment } = req.body;
 
   try {
+    // Check if this is an external food by ID pattern
+    const isExternalFood = 
+      req.params.foodId && 
+      (req.params.foodId.startsWith('sample-') || 
+       req.params.foodId.startsWith('meal-') || 
+       req.params.foodId.startsWith('cocktail-'));
+
+    if (isExternalFood) {
+      // External foods are managed client-side with localStorage
+      // Return 404 to trigger client-side handling
+      return res.status(404).json({ 
+        message: "External food reviews are managed client-side",
+        external: true 
+      });
+    }
+
     const food = await Food.findById(req.params.foodId);
     if (!food) return res.status(404).json({ message: "Food not found" });
 

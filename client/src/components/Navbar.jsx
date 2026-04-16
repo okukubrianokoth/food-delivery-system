@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
+import NotificationToggle from "./NotificationToggle";
 import "./Navbar.css"; // Optional: for styling
 
 const Navbar = () => {
@@ -27,6 +28,12 @@ const Navbar = () => {
         ☰
       </button>
 
+      {user && (
+        <div className="navbar-notifications">
+          <NotificationToggle />
+        </div>
+      )}
+
       <ul className={`nav-links ${isOpen ? "open" : ""}`}>
         <li onClick={() => setIsOpen(false)}>
           <Link to="/">Home</Link>
@@ -37,6 +44,11 @@ const Navbar = () => {
         <li onClick={() => setIsOpen(false)}>
           <Link to="/orders">Orders</Link>
         </li>
+        {user && (
+          <li onClick={() => setIsOpen(false)}>
+            <Link to="/profile">Profile</Link>
+          </li>
+        )}
         {!user && (
           <>
             <li onClick={() => setIsOpen(false)}>
