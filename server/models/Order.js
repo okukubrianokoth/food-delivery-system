@@ -14,12 +14,22 @@ const orderSchema = new mongoose.Schema(
       },
     ],
     total: { type: Number, required: true },
-    phoneNumber: { type: String },
-    status: { type: String, default: "Pending" },
+    phoneNumber: { type: String, required: true },
+    fullName: { type: String, required: true },
+    deliveryAddress: { type: String, required: true },
+    deliveryNotes: { type: String },
+    status: { type: String, default: "Pending", enum: ["Pending", "Preparing", "Ready", "assigned", "picked_up", "out_for_delivery", "delivered", "cancelled", "Cancelled"] },
     mpesaRequestId: { type: String },
     paymentConfirmed: { type: Boolean, default: false },
-    deliveryAddress: { type: String },
-    notes: { type: String },
+    deliveryLocation: {
+      type: { type: String, enum: ['Point'], default: 'Point' },
+      coordinates: [Number],
+    },
+    estimatedDeliveryTime: { type: Date }, // estimated delivery time
+    driver: { type: mongoose.Schema.Types.ObjectId, ref: "Driver" },
+    confirmedAt: { type: Date },
+    pickedUpAt: { type: Date },
+    deliveredAt: { type: Date },
   },
   { timestamps: true }
 );

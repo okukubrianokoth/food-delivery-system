@@ -1,9 +1,13 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import moment from 'moment';
 import Order from '../models/Order.js';
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const {
   MPESA_CONSUMER_KEY,
@@ -37,6 +41,16 @@ const getAccessToken = async () => {
 
 // Function to initiate STK Push
 export const stkPush = async (phoneNumber, amount, orderId) => {
+  const normalizedPhone = phoneNumber?.toString().replace(/\D/g, '');
+  if (!/^2547\d{8}$/.test(normalizedPhone)) {
+    throw new Error('Invalid M-Pesa phone number format. Use 2547XXXXXXXX.');
+  }
+
+  const numericAmount = Number(amount);
+  if (!numericAmount || numericAmount <= 0) {
+    throw new Error('Invalid payment amount. Amount must be a positive number.');
+  }
+
   try {
     const accessToken = await getAccessToken();
     const timestamp = moment().format('YYYYMMDDHHmmss');

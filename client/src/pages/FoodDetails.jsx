@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { useParams, useLocation, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../axiosConfig.js';
 import { CartContext } from '../context/CartContext.jsx';
 import { AuthContext } from '../context/AuthContext.jsx';
 import ExternalReviewWidget from '../components/ExternalReviewWidget.jsx';

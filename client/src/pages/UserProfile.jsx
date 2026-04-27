@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
+import axios from '../axiosConfig.js';
 import { AuthContext } from '../context/AuthContext.jsx';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const UserProfile = () => {

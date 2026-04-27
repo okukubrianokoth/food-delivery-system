@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../axiosConfig.js';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');

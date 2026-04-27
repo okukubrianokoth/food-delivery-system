@@ -1,5 +1,19 @@
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://localhost:5000'; // Your backend server URL
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:5000',
+});
 
-export default axios;
+axiosInstance.interceptors.request.use((config) => {
+  const storedUser = localStorage.getItem('user');
+  const userInfo = storedUser ? JSON.parse(storedUser) : null;
+
+  if (userInfo?.token) {
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${userInfo.token}`;
+  }
+
+  return config;
+});
+
+export default axiosInstance;

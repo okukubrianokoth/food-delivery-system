@@ -3,7 +3,7 @@ import API from "./api";
 export const login = async (email, password) => {
   const { data } = await API.post("/api/auth/login", { email, password });
   if (data.token) {
-    localStorage.setItem("userInfo", JSON.stringify(data));
+    localStorage.setItem("user", JSON.stringify(data));
   }
   return data;
 };
@@ -16,17 +16,17 @@ export const register = async (name, email, password, phoneNumber) => {
 export const verifyOTP = async (email, otp) => {
   const { data } = await API.post("/api/auth/verify", { email, otp });
   if (data.token) {
-    localStorage.setItem("userInfo", JSON.stringify(data));
+    localStorage.setItem("user", JSON.stringify(data));
   }
   return data;
 };
 
 export const logout = () => {
-  localStorage.removeItem("userInfo");
+  localStorage.removeItem("user");
   window.location.href = "/login";
 };
 
 export const getStoredUser = () => {
-  const user = localStorage.getItem("userInfo");
+  const user = localStorage.getItem("user");
   return user ? JSON.parse(user) : null;
 };

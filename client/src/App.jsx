@@ -14,6 +14,7 @@ import Orders from "./pages/Orders.jsx";
 import Admin from "./pages/Admin";
 import UserProfile from "./pages/UserProfile.jsx";
 import OrderConfirmation from "./pages/OrderConfirmation.jsx";
+import DeliveryTracker from "./pages/DeliveryTracker";
 
 // Auth Screens
 import LoginScreen from "./services/LoginScreen.jsx";
@@ -71,6 +72,14 @@ const App = () => {
                 element={
                   <PrivateRoute>
                     <Orders />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/delivery-tracker/:orderId"
+                element={
+                  <PrivateRoute>
+                    <DeliveryTracker />
                   </PrivateRoute>
                 }
               />

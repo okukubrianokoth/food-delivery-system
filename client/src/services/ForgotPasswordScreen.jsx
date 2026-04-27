@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../axiosConfig.js';
 
 const ForgotPasswordScreen = () => {
   const [email, setEmail] = useState('');

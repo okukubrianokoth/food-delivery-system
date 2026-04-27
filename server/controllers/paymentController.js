@@ -5,6 +5,14 @@ export const initiatePayment = async (req, res) => {
   const { orderId, amount, phoneNumber } = req.body; // Expecting orderId and amount from frontend
   const userPhoneNumber = phoneNumber || req.user.phoneNumber; // Use provided number or user's registered number
 
+  if (!userPhoneNumber) {
+    return res.status(400).json({ message: 'A valid M-Pesa phone number is required to initiate payment.' });
+  }
+
+  if (!amount || Number(amount) <= 0) {
+    return res.status(400).json({ message: 'A valid payment amount is required to initiate payment.' });
+  }
+
   try {
     // In a real scenario, you'd create an order in your DB first,
     // then use its ID for the AccountReference.
@@ -13,7 +21,7 @@ export const initiatePayment = async (req, res) => {
     res.json({ message: "STK Push initiated", response });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Payment initiation failed", error: err.message });
+    res.status(500).json({ message: err.message || "Payment initiation failed", error: err.response?.data || err.message });
   }
 };
 

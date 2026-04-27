@@ -1,4 +1,4 @@
-import "dotenv/config";
+import './config/env.js';
 import express from "express";
 import cors from "cors";
 import { connectDB } from "./config/db.js"; // Assuming this exists and connects to MongoDB
@@ -7,6 +7,8 @@ import foodRoutes from "./routes/foodRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
+import driverRoutes from "./routes/driverRoutes.js";
+import mapRoutes from "./routes/mapRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js"; // Assuming these exist
 
 connectDB();
@@ -21,6 +23,8 @@ app.use("/api/foods", foodRoutes);
 app.use("/api/foods/:foodId/reviews", reviewRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/drivers", driverRoutes);
+app.use("/api/maps", mapRoutes);
 
 // Catch 404 and forward to error handler
 app.use(notFound);

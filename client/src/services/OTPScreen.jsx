@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../axiosConfig.js';
 
 const OTPScreen = () => {
   const [otp, setOtp] = useState('');

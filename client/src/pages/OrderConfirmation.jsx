@@ -21,6 +21,9 @@ const OrderConfirmation = () => {
               Please approve the M-Pesa prompt on your phone. After payment, you can review order status on the Orders page.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
+              <Link to={`/delivery-tracker/${orderId}`} className="bg-orange-600 text-white px-5 py-3 rounded-lg text-center hover:bg-orange-700 transition">
+                Track Delivery
+              </Link>
               <Link to="/orders" className="bg-green-600 text-white px-5 py-3 rounded-lg text-center hover:bg-green-700 transition">
                 View My Orders
               </Link>

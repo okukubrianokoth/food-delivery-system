@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../axiosConfig.js';
 
 const RegisterScreen = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '', phoneNumber: '' });

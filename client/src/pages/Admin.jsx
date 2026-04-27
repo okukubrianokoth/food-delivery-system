@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getAllFoods, createFood, updateFood, deleteFood } from "../services/foodService";
-import axios from 'axios';
+import axios from '../axiosConfig.js';
 
 const Admin = () => {
   const [foods, setFoods] = useState([]);
